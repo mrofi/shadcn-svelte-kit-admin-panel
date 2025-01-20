@@ -1,6 +1,11 @@
 <script lang="ts">
 	import '../app.css';
+	import PlainLayout from '$lib/components/layouts/plain.layout.svelte';
+	import { ModeWatcher } from 'mode-watcher';
 	let { children } = $props();
 </script>
 
-{@render children()}
+<ModeWatcher />
+<PlainLayout>
+	{@render children()}
+</PlainLayout>
