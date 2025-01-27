@@ -1,2 +1,7 @@
-<h1>Welcome to Shadcn UI + SvelteKit</h1>
-<p>Visit <a href="https://shadcn-svelte.com">shadcn-svelte.com</a> to read the documentation</p>
+<script>
+// @ts-nocheck
+	import { t } from "@/i18n";
+</script>
+
+<h1>{$t('welcome', {name: 'Shadcn UI + SvelteKit'})}</h1>
+<p>{@html $t('visit_docs')}</p>

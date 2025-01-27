@@ -7,5 +7,6 @@
 
 <ModeWatcher />
 <PlainLayout>
+	<!-- svelte-ignore  -->
 	{@render children()}
 </PlainLayout>
