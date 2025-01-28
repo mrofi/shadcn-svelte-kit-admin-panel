@@ -9,6 +9,8 @@
 	import { locale, locales, updateLocale } from "@/i18n";
 	import { page } from "$app/state";
 
+  let value = $state($locale);
+
 </script>
 <div
   class="container h-screen grid lg:max-w-none px-0"
@@ -16,29 +18,36 @@
   <div class="relative flex flex-col items-center justify-center">
     <div class="absolute right-2 top-4 md:right-4 flex flex-row-reverse items-center space-x-1">
       <Select.Root
-        selected={{ label: $locale.toUpperCase(), value: $locale }}
-        onSelectedChange={(v) => {
+        type="single"
+        value={$locale}
+        onValueChange={(v) => {
           if (v) {
-            locale.set(v.value);
-            updateLocale(v.value, page.url.searchParams.toString());
+            locale.set(v);
+            updateLocale(v, page.url.searchParams.toString());
           }
         }}
       >
         <Select.Trigger
-          class="border-0 shadow-none inline-flex w-[60px] focus:ring-0"
+          class="border-0 shadow-none inline-flex w-[60px] focus:ring-0 focus:ring-offset-0"
+          aria-label="Select a language"
         >
-          <Select.Value
-            placeholder={$locale.toUpperCase()}
-          />
+          {$locale.toUpperCase()}
         </Select.Trigger>
-        <Select.Content>
+        <Select.Content
+          class="w-[60px]"
+        >
           {#each $locales as l}
-          <Select.Item value={l}>{l.toUpperCase()}</Select.Item>
+          <Select.Item 
+            class="w-[60px]"
+            value={l}
+          >
+            {l.toUpperCase()}
+          </Select.Item>
           {/each}
         </Select.Content>
       </Select.Root>
       <Separator orientation="vertical" class="h-[30px]" />
-      <Button on:click={toggleMode} variant="ghost" size="icon" class="hover:bg-transparent">
+      <Button onclick={toggleMode} variant="ghost" size="icon" class="hover:bg-transparent">
         <Sun
           class="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"
         />
@@ -53,10 +62,12 @@
         <Avatar.Image src={siteConfig.logo} alt="Logo" />
         <Avatar.Fallback>{siteConfig.initial}</Avatar.Fallback>
       </Avatar.Root>
-      {siteConfig.name}
+      <div class="hidden md:block">
+        {siteConfig.name}
+      </div>
     </div>
     <div class="py-24 lg:px-8">
-      <div class="mx-auto flex w-[300px] flex-col justify-center space-y-6 sm:w-[350px]">
+      <div class="mx-auto flex flex-col justify-center space-y-6 w-[80%] md:max-w-md lg:max-w-lg xl:max-w-xl">
         <slot />
       </div>
     </div>
