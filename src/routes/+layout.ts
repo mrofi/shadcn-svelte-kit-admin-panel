@@ -1,11 +1,11 @@
 import { addTranslations, setLocale, setRoute } from "@/i18n";
-import translation from "./translation.json";
 
 export const load = async ({ data }) => {
   const { i18n } = data;
   const { locale, route } = i18n;
 
-  addTranslations(translation);
+  const translation = await import(`./translation.json`);
+  addTranslations(translation.default);
 
   await setRoute(route);
   await setLocale(locale);
