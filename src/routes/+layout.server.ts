@@ -1,9 +1,13 @@
-import { loadLocaleFromQueryParam } from "@/i18n";
+import { loadLocaleFromQueryParam, localeName } from "@/i18n";
 import type { LayoutServerLoad } from "./$types";
 
-export const load: LayoutServerLoad = async ({ url, request, cookies }) => {
-  const i18n = await loadLocaleFromQueryParam(url, request, cookies.get('locale')); 
-  cookies.set('locale', i18n.locale, {path: '/'});
+export const load: LayoutServerLoad = async ({ url, request, cookies, locals }) => {
+  const initLocale = cookies.get(localeName);
+  const i18n = await loadLocaleFromQueryParam(url, request, initLocale);
+  
+  cookies.set(localeName, i18n.locale, {path: '/'});
+
+  locals.i18n = i18n;
 
   return { i18n };
 }

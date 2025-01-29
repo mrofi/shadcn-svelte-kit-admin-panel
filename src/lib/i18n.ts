@@ -1,6 +1,7 @@
 import i18n from 'sveltekit-i18n';
 import { siteConfig } from "./config/site";
 import { goto } from '$app/navigation';
+import { page } from '$app/state';
 import { redirect } from '@sveltejs/kit';
 
 export type Locale = {
@@ -8,7 +9,11 @@ export type Locale = {
   route: string
 }
 
+export const genericLocales = siteConfig.locales;
+
 export const fallbackLocale = siteConfig.defaultLocale;
+
+export const localeName = siteConfig.localeIdentifier;
 
 export const config: import('sveltekit-i18n').Config = {
   fallbackLocale,
@@ -17,12 +22,6 @@ export const config: import('sveltekit-i18n').Config = {
 export const { t, loading, locales, locale, translations, loadTranslations, addTranslations, setLocale, setRoute } = new i18n(config);
 
 loading.subscribe(($loading) => $loading && console.log('Loading translations...'));
-
-export const updateLocale = (locale: string, currentUrl: string) => {
-  const query = new URLSearchParams(currentUrl);
-  query.set('locale', locale);
-  goto(`?${query.toString()}`)
-}
 
 const getLocaleFromHeader = (supportedLocales: string[], request: Request, fallbackLocale: string) => {
    // Attempt to detect locale from the `Accept-Language` header
@@ -46,6 +45,20 @@ const getValidInitialLocale = (initLocale: string | undefined, supportedLocales:
   return getLocaleFromHeader(supportedLocales, request, fallbackLocale);
 }
 
+const clientUpdateUrlAndHtmlLang = (url: string | URL, locale: string) => {
+  // Navigate to new URL without losing history
+  goto(url, { replaceState: true });
+
+  // Update the `lang` attribute on the HTML tag
+  document.documentElement.lang = locale;
+}
+
+export const getNewLocaleQueryParam = (url: URL, locale: string) => {
+  const newURL = new URL(url);
+  newURL.searchParams.set(localeName, locale);
+  return newURL;
+}
+
 export const loadLocaleFromQueryParam = async (
   url: URL,
   request: Request,
@@ -53,7 +66,7 @@ export const loadLocaleFromQueryParam = async (
 ): Promise<Locale> => {
   const { pathname: route, searchParams } = url;
   const supportedLocales = Object.keys(siteConfig.locales);
-  const paramLocale = searchParams.get('locale');
+  const paramLocale = searchParams.get(localeName);
   const defaultLocale = siteConfig.defaultLocale;
 
   // Determine initial locale (use alternateLocale or get locale from header or fallback to defaultLocale)
@@ -64,8 +77,7 @@ export const loadLocaleFromQueryParam = async (
     (!paramLocale || !supportedLocales.includes(paramLocale)) &&
     request.method.toUpperCase() === 'GET'
   ) {
-    const newURL = new URL(url);
-    newURL.searchParams.set('locale', locale);
+    const newURL = getNewLocaleQueryParam(url, locale);
     return redirect(302, newURL);
   }
 
@@ -79,6 +91,23 @@ export const loadLocaleFromQueryParam = async (
 
   return { locale, route };
 };
+
+export const clientUpdateLocaleQueryParam = (locale: string) => {
+  const url = new URL(page.url); // Get current URL
+  const newUrl = getNewLocaleQueryParam(url, locale);
+
+  clientUpdateUrlAndHtmlLang(newUrl, locale); // Update URL and HTML lang attribute
+}
+
+const getNewLocaleUrl = (url: URL, locale: string) => {
+  const pathSegments = url.pathname.split('/'); // Split path into segments
+
+  // Replace first segment (language code) with new language
+  pathSegments[1] = locale; 
+
+  // Construct new URL with same query & hash
+  return `${pathSegments.join('/')}${url.search}${url.hash}`;
+}
 
 export const loadLocaleFromUrl = async (
   url: URL, 
@@ -99,8 +128,7 @@ export const loadLocaleFromUrl = async (
     locale = getValidInitialLocale(alternateLocale, supportedLocales, request, defaultLocale);
 
     // Redirect to the URL with the detected locale
-    const newURL = new URL(url);
-    newURL.pathname = `/${locale}${pathname}`;
+    const newURL = getNewLocaleUrl(url, locale);
     return redirect(302, newURL);
   }
 
@@ -117,3 +145,10 @@ export const loadLocaleFromUrl = async (
 
   return { locale, route };
 };
+
+export const clientUpdateLocaleUrl = (locale: string) => {
+  const url = new URL(page.url); // Get current URL
+  const newUrl = getNewLocaleUrl(url, locale);
+
+  clientUpdateUrlAndHtmlLang(newUrl, locale); // Update URL and HTML lang attribute
+}

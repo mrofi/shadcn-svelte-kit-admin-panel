@@ -6,6 +6,7 @@ export const siteConfig = {
   description: "A SvelteKit starter template with Shadcn UI components.",
   url: "https://shadcn-svelte-kit-admin-panel.vercel.app/",
   defaultLocale: "en",
+  localeIdentifier: "lang",
   locales: {
     en: "English",
     id: "Indonesia",
