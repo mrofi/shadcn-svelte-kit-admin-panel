@@ -5,5 +5,5 @@
 
 <BaseFront class="flex flex-col space-y-6 text-center">
   <h1 class="text-xl font-semibold">{$t('welcome', {default: 'Shadcn UI + SvelteKit'})}</h1>
-  <p>{$t('visit_docs')}</p>
+  <p>{@html $t('visit_docs')}</p>
 </BaseFront>

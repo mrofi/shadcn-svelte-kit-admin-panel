@@ -16,6 +16,10 @@ export const fallbackLocale = siteConfig.defaultLocale;
 export const localeName = siteConfig.localeIdentifier;
 
 export const config: import('sveltekit-i18n').Config = {
+  translations: {
+    en: genericLocales,
+    id: genericLocales,
+  },
   fallbackLocale,
 }
 
@@ -99,14 +103,14 @@ export const clientUpdateLocaleQueryParam = (locale: string) => {
   clientUpdateUrlAndHtmlLang(newUrl, locale); // Update URL and HTML lang attribute
 }
 
-const getNewLocaleUrl = (url: URL, locale: string) => {
+const getNewLocaleUrl = (url: URL, locale: string, isClient: boolean) => {
   const pathSegments = url.pathname.split('/'); // Split path into segments
 
   // Replace first segment (language code) with new language
   pathSegments[1] = locale; 
 
   // Construct new URL with same query & hash
-  return `${pathSegments.join('/')}${url.search}${url.hash}`;
+  return `${pathSegments.join('/')}${url.search}${isClient ? url.hash : ''}`;
 }
 
 export const loadLocaleFromUrl = async (
@@ -128,7 +132,7 @@ export const loadLocaleFromUrl = async (
     locale = getValidInitialLocale(alternateLocale, supportedLocales, request, defaultLocale);
 
     // Redirect to the URL with the detected locale
-    const newURL = getNewLocaleUrl(url, locale);
+    const newURL = `${locale}${pathname}${url.search}`;
     return redirect(302, newURL);
   }
 
@@ -148,7 +152,7 @@ export const loadLocaleFromUrl = async (
 
 export const clientUpdateLocaleUrl = (locale: string) => {
   const url = new URL(page.url); // Get current URL
-  const newUrl = getNewLocaleUrl(url, locale);
+  const newUrl = getNewLocaleUrl(url, locale, true);
 
   clientUpdateUrlAndHtmlLang(newUrl, locale); // Update URL and HTML lang attribute
 }
