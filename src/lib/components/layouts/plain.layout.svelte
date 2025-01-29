@@ -6,10 +6,11 @@
   import { Button } from "$lib/components/ui/button";
 	import { Separator } from "$lib/components/ui/separator";
   import { toggleMode } from "mode-watcher";
-	import { locale, locales, updateLocale } from "@/i18n";
-	import { page } from "$app/state";
+	import { clientUpdateLocaleQueryParam, locale, locales } from "@/i18n";
 
-  let value = $state($locale);
+  export const updateLocale = (locale: string) => {
+    clientUpdateLocaleQueryParam(locale);
+  }
 
 </script>
 <div
@@ -23,7 +24,7 @@
         onValueChange={(v) => {
           if (v) {
             locale.set(v);
-            updateLocale(v, page.url.searchParams.toString());
+            updateLocale(v);
           }
         }}
       >
