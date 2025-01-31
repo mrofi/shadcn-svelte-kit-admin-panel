@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import { t } from "@/i18n";
   import BaseFront from "@/components/layouts/base.front.layout.svelte";
 </script>
