@@ -1,10 +1,12 @@
 {
   "en": {
     "welcome": "Welcome to {{value}}",
-    "visit_docs": "Visit <a href=\"https://shadcn-svelte.com\">shadcn-svelte.com</a> to read the documentation"
+    "about_this_project": "About this project",
+    "visit_docs": "Visit {{value}} to read the documentation about shadcn-svelte"
   },
   "id": {
     "welcome": "Selamat datang di {{value}}",
-    "visit_docs": "Kunjungi <a href=\"https://shadcn-svelte.com\">shadcn-svelte.com</a> untuk membaca dokumentasi"
+    "about_this_project": "Tentang proyek ini",
+    "visit_docs": "Kunjungi {{value}} untuk membaca dokumentasi tentang shadcn-svelte"
   }
 }
