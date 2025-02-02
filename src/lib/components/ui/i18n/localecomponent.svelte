@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { fallbackLocale, locale } from "@/i18n";
+  import { fallbackLocale, locale } from "@/i18n";
 
-	let { components } = $props();
+  let { components } = $props();
 
   let LocaleComponent = $state(components['./i18n/skeleton.svelte'].default);
 
