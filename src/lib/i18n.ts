@@ -11,6 +11,8 @@ export type Locale = {
 
 export const genericLocales = siteConfig.locales;
 
+export const supportedLocales = Object.keys(genericLocales);
+
 export const fallbackLocale = siteConfig.defaultLocale;
 
 export const localeName = siteConfig.localeIdentifier;
@@ -27,7 +29,7 @@ export const { t, loading, locales, locale, translations, loadTranslations, addT
 
 loading.subscribe(($loading) => $loading && console.log('Loading translations...'));
 
-const getLocaleFromHeader = (supportedLocales: string[], request: Request, fallbackLocale: string) => {
+const getLocaleFromHeader = (request: Request) => {
    // Attempt to detect locale from the `Accept-Language` header
    const headerLocale = request.headers
     .get('accept-language')
@@ -41,12 +43,12 @@ const getLocaleFromHeader = (supportedLocales: string[], request: Request, fallb
   return fallbackLocale;
 }
 
-const getValidInitialLocale = (initLocale: string | undefined, supportedLocales: string[], request: Request, fallbackLocale: string) => {
+const getValidInitialLocale = (initLocale: string | undefined, request: Request) => {
   // If the initial locale is not supported, try to detect it from the header
   if (initLocale && supportedLocales.includes(initLocale)) {
     return initLocale;
   }
-  return getLocaleFromHeader(supportedLocales, request, fallbackLocale);
+  return getLocaleFromHeader(request);
 }
 
 const clientUpdateUrlAndHtmlLang = (url: string | URL, locale: string) => {
@@ -69,12 +71,10 @@ export const loadLocaleFromQueryParam = async (
   alternateLocale?: string
 ): Promise<Locale> => {
   const { pathname: route, searchParams } = url;
-  const supportedLocales = Object.keys(siteConfig.locales);
   const paramLocale = searchParams.get(localeName);
-  const defaultLocale = siteConfig.defaultLocale;
 
   // Determine initial locale (use alternateLocale or get locale from header or fallback to defaultLocale)
-  let locale = getValidInitialLocale(alternateLocale, supportedLocales, request, defaultLocale);
+  let locale = getValidInitialLocale(alternateLocale, request);
 
   // Redirect if `locale` query param is missing or invalid for GET requests
   if (
@@ -119,8 +119,6 @@ export const loadLocaleFromUrl = async (
   alternateLocale?: string
 ): Promise<Locale> => {
   const { pathname } = url;
-  const supportedLocales = Object.keys(siteConfig.locales);
-  const defaultLocale = siteConfig.defaultLocale;
 
   // Extract the locale from the URL pathname
   let locale = supportedLocales.find((l) =>
@@ -129,7 +127,7 @@ export const loadLocaleFromUrl = async (
 
   // Handle missing locale for GET requests
   if (!locale && request.method.toUpperCase() === 'GET') {
-    locale = getValidInitialLocale(alternateLocale, supportedLocales, request, defaultLocale);
+    locale = getValidInitialLocale(alternateLocale, request);
 
     // Redirect to the URL with the detected locale
     const newURL = `${locale}${pathname}${url.search}`;
@@ -138,7 +136,7 @@ export const loadLocaleFromUrl = async (
 
   // Default to the default locale if none is found
   if (!locale) {
-    locale = defaultLocale;
+    locale = fallbackLocale;
   }
 
   // Determine the route by stripping the locale from the pathname
