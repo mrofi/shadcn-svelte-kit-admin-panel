@@ -35,7 +35,7 @@
         class={
           buttonVariants(
             { variant: "ghost", size: "icon", class: cn(
-              "md:hidden absolute top-3 left-0 h-6 w-6 flex flex-col justify-center items-end *:h-[1px] *:bg-foreground *:duration-300 hover:bg-transparent focus:ring-transparent focus-visible:ring-transparent *:m-0",
+              "md:hidden absolute top-3 left-0 h-6 w-6 flex flex-col justify-center items-end *:h-[1px] *:bg-foreground *:duration-300 hover:bg-transparent focus:ring-transparent focus-visible:ring-transparent",
               className
             )}
           )

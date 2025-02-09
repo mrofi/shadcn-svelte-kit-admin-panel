@@ -6,7 +6,7 @@
 <div
   class={cn(
     "w-[80%] transition-transform transform origin-center",
-    transform && "rotate-45 translate-y-2 w-[100%]"
+    transform && "rotate-45 translate-y-[9px] w-[100%]"
   )}
 ></div>
 
@@ -20,6 +20,6 @@
   <div
   class={cn(
     "w-[50%] transition-transform transform origin-center",
-    transform && "-rotate-45 -translate-y-2 w-[100%]"
+    transform && "-rotate-45 -translate-y-[9px] w-[100%]"
   )}
 ></div>
