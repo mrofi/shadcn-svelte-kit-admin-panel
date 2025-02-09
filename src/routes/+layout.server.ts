@@ -1,14 +1,11 @@
-import { loadLocaleFromUrl, localeName } from "@/i18n";
 import type { LayoutServerLoad } from "./$types";
 
 export const load: LayoutServerLoad = async ({ url, request, cookies, locals }) => {
-  // get locale from cookie
-  const initLocale = cookies.get(localeName);
-  const i18n = await loadLocaleFromUrl(url, request, initLocale);
-  
-  cookies.set(localeName, i18n.locale, {path: '/'});
+  // get session from supabase
+  const { session } = await locals.safeGetSession();
 
-  locals.i18n = i18n;
+  // get Locale from i18n
+  const i18n = await locals.getI18n(url, request, cookies);
 
-  return { i18n };
+  return { session, cookies: cookies.getAll(), i18n };
 }

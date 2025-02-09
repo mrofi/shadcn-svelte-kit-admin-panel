@@ -1,8 +1,6 @@
-export async function handle({ event, resolve }) {
-	return resolve(event, {
-    // then you can read this local here bc SvelteKit will run this function after the +page.server.ts
-		transformPageChunk: ({ html }) => {
-			return html.replace(/<html([^>]*)>/, `<html lang="${event.locals.i18n.locale}">`)
-		}
-	});
-};
+import type { Handle } from '@sveltejs/kit';
+import { sequence } from '@sveltejs/kit/hooks';
+import { handle as supabase} from '@/supabase';
+import { handle as i18n } from '@/i18n/server';
+
+export const handle: Handle = sequence(supabase, i18n);
