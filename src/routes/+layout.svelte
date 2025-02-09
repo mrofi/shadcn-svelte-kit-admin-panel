@@ -1,25 +1,63 @@
 <script lang="ts">
   import '../app.css';
-  import PlainLayout from '$lib/components/layouts/plain.layout.svelte';
+  import PlainLayout from '@/components/layouts/plain/layout.svelte';
+	import MobileMenu  from '$lib/components/layouts/menus/mobile.svelte';
   import { ModeWatcher } from 'mode-watcher';
+	import { Button, buttonVariants } from '$lib/components/ui/button';
+	import { cn } from '@/utils';
+	import { locale, t } from '@/i18n';
+	import { page } from '$app/state';
+	import { siteConfig } from '@/config/site';
+	import Logo from '@/components/layouts/logo.svelte';
+	import { Separator } from '@/components/ui/separator';
+  import { Selector as DarkModeSelector } from "$lib/components/ui/darkmode";
+  import { Selector as I18nSelector } from "$lib/components/ui/i18n";
+  import menu from './menu.json';
   let { children } = $props();
 </script>
 
-{#snippet navMenu(active: string)}
-  <a href="/docs" class="hover:text-gray-900">Documentation</a>
-  <a href="/features" class="hover:text-gray-900">Features</a>
-  <a href="/about" class="hover:text-gray-900">About</a>
+{#snippet menuItem(url: string, title: string)}
+  <a href={url} class={cn(
+    page.url.pathname === `/${$locale}${url}`
+      ? "font-semibold tracking-wide underline underline-offset-8"
+      : "hover:font-semibold hover:tracking-wide"
+  )}>{title}</a>
 {/snippet}
 
-{#snippet navLeft()}
-  <!-- Navigation Links (Hidden on smaller screens) -->
-  <nav class="hidden md:flex space-x-6 text-gray-600">
-    {@render navMenu("")}
-  </nav>
+{#snippet navMenu(menu: {name: string, path: string}[])}
+  {#each menu as item (item.name)}
+    {@render menuItem(item.path, $t(`menu.${item.name}`, {default: item.name}))}
+  {/each}
+{/snippet}
+
+{#snippet mobileMenu()}
+  <MobileMenu class="mr-4" title={siteConfig.name} >
+    {@render navMenu(menu)}
+    <DarkModeSelector class="-ml-3"/>
+  </MobileMenu>
 {/snippet}
 
 <ModeWatcher />
 <PlainLayout>
+  {#snippet navLeft()}
+    {@render mobileMenu()}
+    <Logo />
+  {/snippet}
+
+  {#snippet navMiddle()}
+    <!-- Navigation Links (Hidden on smaller screens) -->
+    <nav class="hidden ml-4 md:flex space-x-4 text-sm font-normal tracking-wider flex-wrap">
+      {@render navMenu(menu)}
+    </nav>
+  {/snippet}
+
+  {#snippet navRight()}
+    <DarkModeSelector class="hidden md:flex" />
+    <Separator orientation="vertical" class="hidden md:flex h-[30px]" />
+    <I18nSelector />
+    <Button href="/app" class="text-xs h-8">{$t('try_button')}</Button>
+  {/snippet}
+
   <!-- svelte-ignore  -->
-  {@render children()}
+  {@render children?.()}
 </PlainLayout>
