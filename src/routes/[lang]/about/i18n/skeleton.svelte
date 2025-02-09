@@ -1,5 +1,5 @@
 <script lang="ts">
-  import BaseFront from "@/components/layouts/base.front.layout.svelte";
+  import BaseFront from "@/components/layouts/front-base.svelte";
   import { Skeleton } from "@/components/ui/skeleton";
 </script>
 

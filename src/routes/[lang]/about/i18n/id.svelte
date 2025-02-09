@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Button } from "$lib/components/ui/button";
   import { ExternalLink } from "lucide-svelte";
-  import BaseFront from "@/components/layouts/base.front.layout.svelte";
+  import BaseFront from "@/components/layouts/front-base.svelte";
   import { Star } from "svelte-radix";
 </script>
 
