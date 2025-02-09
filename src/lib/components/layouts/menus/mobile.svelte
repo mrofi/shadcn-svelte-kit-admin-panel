@@ -10,7 +10,7 @@
 
 <Drawer.Root bind:open direction="left">
   <Drawer.Trigger class={buttonVariants({ variant: "ghost", size: "icon", class: cn(
-      "md:hidden h-6 w-6 flex flex-col justify-center items-end *:h-[0.1px] *:bg-foreground *:duration-300 hover:bg-transparent focus:ring-transparent focus-visible:ring-transparent *:m-0",
+      "md:hidden h-6 w-6 flex flex-col justify-center items-end *:h-[1px] *:bg-foreground *:duration-300 hover:bg-transparent focus:ring-transparent focus-visible:ring-transparent *:m-0",
       className
      )})}>
     <MenuIcon transform={open} />
