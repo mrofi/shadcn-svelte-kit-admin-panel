@@ -5,7 +5,7 @@
 </script>
 <div
   class={cn(
-    "py-24 mx-auto max-w-[80%] md:max-w-md lg:max-w-lg xl:max-w-xl",
+    "py-6 md:py-12",
     className
   )}
 >
