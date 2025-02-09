@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { fallbackLocale, locale } from "@/i18n";
+  import { locale } from "@/i18n";
+	import { fallbackLocale } from "@/i18n/config";
 
   let { components } = $props();
 

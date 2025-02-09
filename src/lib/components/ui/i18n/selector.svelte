@@ -1,6 +1,7 @@
 <script lang="ts">
-	import { clientUpdateLocaleUrl, locale, locales } from "@/i18n";
-	import * as Select from "$lib/components/ui/select";
+  import * as Select from "$lib/components/ui/select";
+	import { locale, locales } from "@/i18n";
+	import { clientUpdateLocaleUrl } from "@/i18n/client";
 </script>
 
 <Select.Root
