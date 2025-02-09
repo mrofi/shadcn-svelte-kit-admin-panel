@@ -1,33 +1,8 @@
-import i18n from 'sveltekit-i18n';
-import { siteConfig } from "./config/site";
-import { goto } from '$app/navigation';
-import { page } from '$app/state';
-import { redirect } from '@sveltejs/kit';
-
-export type Locale = {
-  locale: string,
-  route: string
-}
-
-export const genericLocales = siteConfig.locales;
-
-export const supportedLocales = Object.keys(genericLocales);
-
-export const fallbackLocale = siteConfig.defaultLocale;
-
-export const localeName = siteConfig.localeIdentifier;
-
-export const config: import('sveltekit-i18n').Config = {
-  translations: {
-    en: genericLocales,
-    id: genericLocales,
-  },
-  fallbackLocale,
-}
-
-export const { t, loading, locales, locale, translations, loadTranslations, addTranslations, setLocale, setRoute } = new i18n(config);
-
-loading.subscribe(($loading) => $loading && console.log('Loading translations...'));
+import type { Locale } from './types';
+import { fallbackLocale, localeName, supportedLocales } from './config';
+import { getNewLocaleQueryParam } from './utils';
+import { redirect, type Cookies, type Handle } from '@sveltejs/kit';
+import { loadTranslations } from '.';
 
 const getLocaleFromHeader = (request: Request) => {
    // Attempt to detect locale from the `Accept-Language` header
@@ -49,20 +24,6 @@ const getValidInitialLocale = (initLocale: string | undefined, request: Request)
     return initLocale;
   }
   return getLocaleFromHeader(request);
-}
-
-const clientUpdateUrlAndHtmlLang = (url: string | URL, locale: string) => {
-  // Navigate to new URL without losing history
-  goto(url, { replaceState: true });
-
-  // Update the `lang` attribute on the HTML tag
-  document.documentElement.lang = locale;
-}
-
-export const getNewLocaleQueryParam = (url: URL, locale: string) => {
-  const newURL = new URL(url);
-  newURL.searchParams.set(localeName, locale);
-  return newURL;
 }
 
 export const loadLocaleFromQueryParam = async (
@@ -95,23 +56,6 @@ export const loadLocaleFromQueryParam = async (
 
   return { locale, route };
 };
-
-export const clientUpdateLocaleQueryParam = (locale: string) => {
-  const url = new URL(page.url); // Get current URL
-  const newUrl = getNewLocaleQueryParam(url, locale);
-
-  clientUpdateUrlAndHtmlLang(newUrl, locale); // Update URL and HTML lang attribute
-}
-
-const getNewLocaleUrl = (url: URL, locale: string, isClient: boolean) => {
-  const pathSegments = url.pathname.split('/'); // Split path into segments
-
-  // Replace first segment (language code) with new language
-  pathSegments[1] = locale; 
-
-  // Construct new URL with same query & hash
-  return `${pathSegments.join('/')}${url.search}${isClient ? url.hash : ''}`;
-}
 
 export const loadLocaleFromUrl = async (
   url: URL, 
@@ -148,9 +92,21 @@ export const loadLocaleFromUrl = async (
   return { locale, route };
 };
 
-export const clientUpdateLocaleUrl = (locale: string) => {
-  const url = new URL(page.url); // Get current URL
-  const newUrl = getNewLocaleUrl(url, locale, true);
+export const handle: Handle = async ({ event, resolve }) => {
+  event.locals.getI18n = async (url: URL, request: Request, cookies: Cookies) => {
+    // get locale from cookie
+    const initLocale = cookies.get(localeName);
+    const i18n = await loadLocaleFromUrl(url, request, initLocale);
+    event.locals.i18n = i18n;
+    cookies.set(localeName, i18n.locale, {path: '/'});
+  
+    return i18n;
+  }
 
-  clientUpdateUrlAndHtmlLang(newUrl, locale); // Update URL and HTML lang attribute
-}
+  return resolve(event, {
+    // then you can read this local here bc SvelteKit will run this function after the +page.server.ts
+		transformPageChunk: ({ html }) => {
+			return html.replace(/<html([^>]*)>/, `<html lang="${event.locals.i18n.locale}">`)
+		}
+	});
+};
