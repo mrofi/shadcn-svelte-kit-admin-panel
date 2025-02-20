@@ -74,7 +74,7 @@ export const loadLocaleFromUrl = async (
     locale = getValidInitialLocale(alternateLocale, request);
 
     // Redirect to the URL with the detected locale
-    const newURL = `${locale}${pathname}${url.search}`;
+    const newURL = `/${locale}${pathname}${url.search}`;
     return redirect(302, newURL);
   }
 
