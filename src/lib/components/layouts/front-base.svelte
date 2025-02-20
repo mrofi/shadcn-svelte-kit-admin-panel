@@ -5,7 +5,7 @@
 </script>
 <div
   class={cn(
-    "py-6 md:py-12",
+    "py-6 md:py-12 min-h-full justify-center",
     className
   )}
 >

@@ -8,11 +8,9 @@
 		class: className,
 		portalProps,
 		children,
-		handle,
 		...restProps
 	}: DrawerPrimitive.ContentProps & {
 		portalProps?: DrawerPrimitive.PortalProps;
-		handle?: boolean;
 	} = $props();
 </script>
 
@@ -26,9 +24,7 @@
 		)}
 		{...restProps}
 	>
-		{#if handle}
-			<div class="bg-muted mx-auto mt-4 h-2 w-[100px] rounded-full"></div>
-		{/if}
+		<div class="bg-muted mx-auto mt-4 h-2 w-[100px] rounded-full"></div>
 		{@render children?.()}
 	</DrawerPrimitive.Content>
 </DrawerPrimitive.Portal>

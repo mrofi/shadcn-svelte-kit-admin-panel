@@ -20,7 +20,7 @@
     {$locale.toUpperCase()}
   </Select.Trigger>
   <Select.Content
-    class="w-[60px]"
+    class="min-w-0"
   >
     {#each $locales as l}
     <Select.Item 
