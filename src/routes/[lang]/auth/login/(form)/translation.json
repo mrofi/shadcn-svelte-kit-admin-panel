@@ -1,0 +1,22 @@
+{
+  "en": {
+    "login_form": {
+      "forgot_password": "Forgot your password",
+      "label_remember": "Stay logged in for a week",
+      "label_button": "Continue",
+      "invalid_credentials": "Invalid email or password",
+      "success": "Successfully logged in",
+      "submit_error": "Signing in is failed. Please try again"
+    }
+  },
+  "id": {
+    "login_form": {
+      "forgot_password": "Lupa password Anda",
+      "label_remember": "Tetap masuk selama seminggu",
+      "label_button": "Lanjutkan",
+      "invalid_credentials": "Email atau password salah",
+      "success": "Berhasil masuk ke akun",
+      "submit_error": "Gagal masuk ke akun. Mohon coba lagi"
+    }
+  }
+}

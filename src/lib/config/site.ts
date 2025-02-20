@@ -11,6 +11,9 @@ export const siteConfig = {
     en: "English",
     id: "Indonesia",
   },
+  auth: {
+    loginRedirect: '/app',
+  }
 };
 
 export type SiteConfig = typeof siteConfig;
