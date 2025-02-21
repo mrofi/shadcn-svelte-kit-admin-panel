@@ -4,6 +4,7 @@ import { superValidate } from "sveltekit-superforms/server";
 import { formSchema } from "./(form)/schema";
 import { redirect } from "@sveltejs/kit";
 import { siteConfig } from "@/config/site";
+import { fail } from "sveltekit-superforms";
 
 export const load: PageServerLoad = async ({ parent, url }) => {
   const { i18n } = await parent();
@@ -12,7 +13,7 @@ export const load: PageServerLoad = async ({ parent, url }) => {
 
   const nextUrl = url.searchParams.get("next");
   const redirectUrl = new URL(nextUrl ?? siteConfig.auth.loginRedirect ?? "/", url).toString();
-  return { form, redirectUrl };
+  return { locale, form, redirectUrl };
 };
 
 export const actions: Actions = {
@@ -23,6 +24,11 @@ export const actions: Actions = {
 
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) {
+      const { code } = error;
+      if (code === 'invalid_credentials') {
+        return fail(400, {errors: {login: 'failed'}});
+      }
+
       throw error;
     } else {
       const next = url.searchParams.get('next') ?? siteConfig.auth.loginRedirect ?? "/";

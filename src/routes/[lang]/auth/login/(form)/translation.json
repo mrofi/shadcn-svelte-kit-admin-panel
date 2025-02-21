@@ -6,7 +6,7 @@
       "label_button": "Continue",
       "invalid_credentials": "Invalid email or password",
       "success": "Successfully logged in",
-      "submit_error": "Signing in is failed. Please try again"
+      "submit_error": "Logging in is failed. Please try again"
     }
   },
   "id": {
